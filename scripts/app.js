@@ -1,83 +1,85 @@
 (function () {
-
     // Create your own kinvey application
-
     let baseUrl = "https://baas.kinvey.com";
     let appKey = "kid_B1eNtO6q";
     let appSecret = "276b4e89af964e34bd1e0c6c82b57858";
-    let _guestCredentials = "4eeb88d7-9df5-461f-bb47-6d14c18b9d0d.vj1MajxdP6VrSaq6pdWjUCre+H/aqEnl8DEfmOMfqNo="; // Create a guest user using PostMan/RESTClient/Fiddler and place his authtoken here...
-
+    let _guestCredentials = "4eeb88d7-9df5-461f-bb47-6d14c18b9d0d.vj1MajxdP6VrSaq6pdWjUCre+H/aqEnl8DEfmOMfqNo=";
+    
     //Create AuthorizationService and Requester
-
-    let authService = new AuthorizationService(baseUrl, appKey, appSecret, _guestCredentials);
-    let requester = new Requester(authService);
-
+    let authService = new AuthorizationService(
+        baseUrl,
+        appKey,
+        appSecret,
+        _guestCredentials
+    );
     authService.initAuthorizationType("Kinvey");
+    let requester = new Requester(authService);
 
     let selector = ".wrapper";
     let mainContentSelector = ".main-content";
-    let authService = new AuthorizationService(baseUrl,
-            appKey,
-            appSecret,
-            _guestCredentials);
-    authService.initAuthorizationType("Kinvey");
-
-    let requestor = new Requester(authService);
 
     // Create HomeView, HomeController, UserView, UserController, PostView and PostController
+    let homeView = new HomeView(selector, mainContentSelector);
+    let homeController = new HomeController(homeView, requester, baseUrl, appKey);
 
-    let homeView = new HomeView(mainContentSelector, selector);
-    let homeController = new HomeController(homeView);
-
-    let userView = new UserView(mainContentSelector, selector);
-    let userController = new UserController(userView);
-
-    let postView = new PostView(mainContentSelector, selector);
-    let postController = new PostController(postView);
-
+    let userView = new UserView(selector, mainContentSelector);
+    let userController = new UserController(userView, requester, baseUrl, appKey);
+    
+    let postView = new PostView(selector, mainContentSelector);
+    let postController = new PostController(postView, requester, baseUrl, appKey);
 
     initEventServices();
 
-    onRoute("#/", function () {
-        if(authService.isLoggedIn()){
+    onRoute("#/",
+        // Check if user is logged in and if its not show the guest page, otherwise show the user page...
+        function () {
+        if (authService.isLoggedIn()){
             homeController.showUserPage();
         }
-        else {
+        else{
             homeController.showGuestPage();
         }
-        // Check if user is logged in and if its not show the guest page, otherwise show the user page...
     });
 
     onRoute("#/post-:id", function () {
-        // Create a redirect to one of the recent posts...
+       let top = $("#post-" + this.params['id'])
+           .position().top;
+        $(window).scrollTop(top);
     });
 
     onRoute("#/login", function () {
-        // Show the login page...
+        userController.showLoginPage(authService.isLoggedIn());
     });
 
     onRoute("#/register", function () {
-        // Show the register page...
+        userController.showRegisterPage(authService.isLoggedIn());
     });
 
     onRoute("#/logout", function () {
-        // Logout the current user...
+        userController.logout();
     });
 
     onRoute('#/posts/create', function () {
         // Show the new post page...
+        let data ={
+            fullName: sessionStorage['fullName']
+        }
+        postController.showCreatePostPage(data, authService.isLoggedIn());
     });
 
     bindEventHandler('login', function (ev, data) {
         // Login the user...
+        userController.login(data);
     });
 
     bindEventHandler('register', function (ev, data) {
         // Register a new user...
+        userController.register(data);
     });
 
     bindEventHandler('createPost', function (ev, data) {
         // Create a new post...
+        postController.createNewPost(data);
     });
 
     run('#/');
