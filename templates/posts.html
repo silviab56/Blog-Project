@@ -1,0 +1,14 @@
+{{#blogPosts}}
+<li class="single-post">
+    <article id="post-{{postId}}">
+        <div class="dot">&nbsp;</div>
+        <h3 class="title">{{title}}</h3>
+        <p class="subtitle">Posted on {{date}} by {{author}}</p>
+        <p class="content">{{content}}</p>
+        <div style="overflow:hidden;">
+            <button class="editBtn" id="edit-{{postId}}">Edit</button>
+            <button class="deleteBtn" id="del-{{postId}}">Delete</button>
+        </div>
+    </article>
+</li>
+{{/blogPosts}}
