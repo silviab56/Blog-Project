@@ -48,7 +48,7 @@ input:focus {
 button {
     font: 16px Lato;
     color: white;
-    background-color: #06c0ab;
+    background-color: #FF6666;
     padding: 8px;
     margin-top: 15px;
     margin-bottom: 10px;
@@ -58,7 +58,7 @@ button {
 }
 
 button:hover {
-    background-color: #565656;
+    background-color: #06c0ab;
 }
 
 .form-link {
