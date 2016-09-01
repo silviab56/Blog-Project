@@ -18,8 +18,8 @@
 
   var objectToString = Object.prototype.toString;
   var isArray = Array.isArray || function isArrayPolyfill (object) {
-    return objectToString.call(object) === '[object Array]';
-  };
+        return objectToString.call(object) === '[object Array]';
+      };
 
   function isFunction (object) {
     return typeof object === 'function';
@@ -596,8 +596,8 @@
   mustache.render = function render (template, view, partials) {
     if (typeof template !== 'string') {
       throw new TypeError('Invalid template! Template should be a "string" ' +
-                          'but "' + typeStr(template) + '" was given as the first ' +
-                          'argument for mustache#render(template, view, partials)');
+          'but "' + typeStr(template) + '" was given as the first ' +
+          'argument for mustache#render(template, view, partials)');
     }
 
     return defaultWriter.render(template, view, partials);

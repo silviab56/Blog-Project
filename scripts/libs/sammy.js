@@ -18,9 +18,9 @@
       PATH_REPLACER = "([^\/]+)",
       PATH_NAME_MATCHER = /:([\w\d]+)/g,
       QUERY_STRING_MATCHER = /\?([^#]*)?$/,
-      // mainly for making `arguments` an Array
+  // mainly for making `arguments` an Array
       _makeArray = function(nonarray) { return Array.prototype.slice.call(nonarray); },
-      // borrowed from jQuery
+  // borrowed from jQuery
       _isFunction = function( obj ) { return Object.prototype.toString.call(obj) === "[object Function]"; },
       _isArray = function( obj ) { return Object.prototype.toString.call(obj) === "[object Array]"; },
       _isRegExp = function( obj ) { return Object.prototype.toString.call(obj) === "[object RegExp]"; },
@@ -258,14 +258,14 @@
   };
 
   Sammy.DefaultLocationProxy.fullPath = function(location_obj) {
-   // Bypass the `window.location.hash` attribute.  If a question mark
+    // Bypass the `window.location.hash` attribute.  If a question mark
     // appears in the hash IE6 will strip it and all of the following
     // characters from `window.location.hash`.
     var matches = location_obj.toString().match(/^[^#]*(#.+)$/);
     var hash = matches ? matches[1] : '';
     return [location_obj.pathname, location_obj.search, hash].join('');
   };
-$.extend(Sammy.DefaultLocationProxy.prototype , {
+  $.extend(Sammy.DefaultLocationProxy.prototype , {
     // bind the proxy events to the current app.
     bind: function() {
       var proxy = this, app = this.app, lp = Sammy.DefaultLocationProxy;
@@ -290,16 +290,16 @@ $.extend(Sammy.DefaultLocationProxy.prototype , {
             return;
           }
           var full_path = lp.fullPath(this),
-            // Get anchor's host name in a cross browser compatible way.
-            // IE looses hostname property when setting href in JS 
-            // with a relative URL, e.g. a.setAttribute('href',"/whatever").
-            // Circumvent this problem by creating a new link with given URL and 
-            // querying that for a hostname. 
-            hostname = this.hostname ? this.hostname : function (a) {
-              var l = document.createElement("a");
-              l.href = a.href;
-              return l.hostname;
-            }(this);
+          // Get anchor's host name in a cross browser compatible way.
+          // IE looses hostname property when setting href in JS 
+          // with a relative URL, e.g. a.setAttribute('href',"/whatever").
+          // Circumvent this problem by creating a new link with given URL and 
+          // querying that for a hostname. 
+              hostname = this.hostname ? this.hostname : function (a) {
+                var l = document.createElement("a");
+                l.href = a.href;
+                return l.hostname;
+              }(this);
 
           if (hostname == window.location.hostname &&
               app.lookupRoute('get', full_path) &&
@@ -361,7 +361,7 @@ $.extend(Sammy.DefaultLocationProxy.prototype , {
         var hashCheck = function() {
           var current_location = proxy.getLocation();
           if (typeof Sammy.DefaultLocationProxy._last_location == 'undefined' ||
-            current_location != Sammy.DefaultLocationProxy._last_location) {
+              current_location != Sammy.DefaultLocationProxy._last_location) {
             window.setTimeout(function() {
               $(window).trigger('hashchange', [true]);
             }, 0);
@@ -1416,16 +1416,16 @@ $.extend(Sammy.DefaultLocationProxy.prototype , {
     },
 
     _serializeFormParams: function($form) {
-       var queryString = "",
-         fields = $form.serializeArray(),
-         i;
-       if (fields.length > 0) {
-         queryString = this._encodeFormPair(fields[0].name, fields[0].value);
-         for (i = 1; i < fields.length; i++) {
-           queryString = queryString + "&" + this._encodeFormPair(fields[i].name, fields[i].value);
-         }
-       }
-       return queryString;
+      var queryString = "",
+          fields = $form.serializeArray(),
+          i;
+      if (fields.length > 0) {
+        queryString = this._encodeFormPair(fields[0].name, fields[0].value);
+        for (i = 1; i < fields.length; i++) {
+          queryString = queryString + "&" + this._encodeFormPair(fields[i].name, fields[i].value);
+        }
+      }
+      return queryString;
     },
 
     _encodeFormPair: function(name, value){
@@ -1694,9 +1694,9 @@ $.extend(Sammy.DefaultLocationProxy.prototype , {
         for(name in partials) {
           (function(context, name) {
             context.load(partials[name])
-                   .then(function(template) {
-                     this.partials[name] = template;
-                   });
+                .then(function(template) {
+                  this.partials[name] = template;
+                });
           })(this, name);
         }
       }
@@ -1739,9 +1739,9 @@ $.extend(Sammy.DefaultLocationProxy.prototype , {
         }
 
         return this.loadPartials(partials)
-                   .load(location)
-                   .interpolate(data, location)
-                   .then(callback);
+            .load(location)
+            .interpolate(data, location)
+            .then(callback);
       }
     },
 
@@ -1825,31 +1825,31 @@ $.extend(Sammy.DefaultLocationProxy.prototype , {
         name = null;
       }
       return this.load(location).then(function(content) {
-          var rctx = this;
-          if (!data) {
-            data = _isArray(this.previous_content) ? this.previous_content : [];
-          }
-          if (callback) {
-            $.each(data, function(i, value) {
-              var idata = {}, engine = this.next_engine || location;
-              if (name) {
-                idata[name] = value;
-              } else {
-                idata = value;
-              }
-              callback(value, rctx.event_context.interpolate(content, idata, engine));
-            });
-          } else {
-            return this.collect(data, function(i, value) {
-              var idata = {}, engine = this.next_engine || location;
-              if (name) {
-                idata[name] = value;
-              } else {
-                idata = value;
-              }
-              return this.event_context.interpolate(content, idata, engine);
-            }, true);
-          }
+        var rctx = this;
+        if (!data) {
+          data = _isArray(this.previous_content) ? this.previous_content : [];
+        }
+        if (callback) {
+          $.each(data, function(i, value) {
+            var idata = {}, engine = this.next_engine || location;
+            if (name) {
+              idata[name] = value;
+            } else {
+              idata = value;
+            }
+            callback(value, rctx.event_context.interpolate(content, idata, engine));
+          });
+        } else {
+          return this.collect(data, function(i, value) {
+            var idata = {}, engine = this.next_engine || location;
+            if (name) {
+              idata[name] = value;
+            } else {
+              idata = value;
+            }
+            return this.event_context.interpolate(content, idata, engine);
+          }, true);
+        }
       });
     },
 

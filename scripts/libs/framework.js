@@ -1,4 +1,5 @@
 class Requester {
+    /*Handle requests*/
     constructor(authorizationService) {
         this.authorizationService = authorizationService;
     }
@@ -29,20 +30,25 @@ class Requester {
             url: url,
             headers: headers,
             data: JSON.stringify(data) || null,
-            beforeSend: function () {
-                if ($("#loader-modal").length) {
-                    $("#loader-modal").css("display", "block");
-                    $(".wrapper").css("display", "none");
-                }
-            },
+            /*ANIMATIONS are commented*/
+            /*beforeSend: function () {
+             if ($("#loader-modal").length) {
+             $("#loader-modal").css("display", "block");
+             // $(".wrapper").css("display", "none");
+             }
+             },*/
             success: successCallBack,
-            error: errorCallBack,
-            complete: function () {
-                if ($("#loader-modal").length) {
-                    $("#loader-modal").css("display", "none");
-                    $(".wrapper").css("display", "inline-block");
-                }
-            }
+            error: errorCallBack
+            /*Animation*/
+            /*,
+             complete: function () {
+             if ($("#loader-modal").length) {
+             $("#loader-modal").css("display", "none");
+             $(".wrapper").css("display", "inline-block");
+             $(".body").css("background-color", "FFF");
+             }
+             },
+             //async: false*/
         });
     }
 
@@ -100,11 +106,11 @@ class AuthorizationService {
 }
 
 function showPopup(type, text, position) {
-
+    /*Handle notifications*/
     function _showSuccessPopup(text, position) {
         noty({
             text: text,
-            timeout: 2000,
+            timeout: 1500,
             layout: 'top',
             type: 'success'
         });
@@ -113,7 +119,7 @@ function showPopup(type, text, position) {
     function _showInfoPopup(text, position) {
         noty({
             text: text,
-            timeout: 2000,
+            timeout: 1500,
             layout: 'top',
             type: 'information'
         });
@@ -122,7 +128,7 @@ function showPopup(type, text, position) {
     function _showWarningPopup(text, position) {
         noty({
             text: text,
-            timeout: 2000,
+            timeout: 1500,
             layout: 'top',
             type: 'warning'
         });
@@ -131,7 +137,7 @@ function showPopup(type, text, position) {
     function _showErrorPopup(text, position) {
         noty({
             text: text,
-            timeout: 2000,
+            timeout: 1500,
             layout: 'top',
             type: 'error'
         });
@@ -153,8 +159,7 @@ function showPopup(type, text, position) {
     }
 }
 
-
-// EVENT SERVICES
+/*Handle events*/
 
 let _isInstanced = false;
 let _router;
@@ -163,15 +168,12 @@ function initEventServices() {
     if (_isInstanced) {
         return;
     }
-
     _router = Sammy(function () {
         //Here we put all pre-initialized functions, event handlers, and so on...
-
         this.bind('redirectUrl', function (ev, url) {
             this.redirect(url);
         });
     });
-
     _isInstanced = true;
 }
 
@@ -180,25 +182,64 @@ function redirectUrl(url) {
         this.trigger('redirectUrl', url);
     });
 }
-
 function bindEventHandler(event, eventHandler) {
     Sammy(function () {
         this.bind(event, eventHandler);
     });
 }
-
 function onRoute(route, routeHandler) {
     Sammy(function () {
         this.get(route, routeHandler);
     });
 }
-
 function triggerEvent(event, data) {
     Sammy(function () {
         this.trigger(event, data);
     });
 }
-
 function run(rootUrl) {
     _router.run(rootUrl);
+}
+
+/*HTML Editor options/handling*/
+function initHtmlEditor() {
+    if (tinymce.editors.length > 0) {
+        tinymce.remove();
+    }
+    tinymce.init({
+        selector: '.content-field',
+        theme: 'modern',
+        plugins: [
+            'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+            'searchreplace wordcount visualblocks visualchars code fullscreen',
+            'insertdatetime media nonbreaking save table contextmenu directionality',
+            'emoticons template paste textcolor colorpicker textpattern imagetools'
+        ],
+        toolbar1: 'insertfile undo redo | styleselect | bold italic | bullist numlist outdent indent | link image',
+        toolbar2: 'print preview media | forecolor backcolor emoticons',
+        image_advtab: true,
+        templates: [
+            {title: 'Test template 1', content: 'Test 1'},
+            {title: 'Test template 2', content: 'Test 2'}
+        ],
+        content_css: '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+        forced_root_block: '',
+    });
+}
+
+
+/*Important for escaping html (scripts)*/
+let entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;'
+};
+
+function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+        return entityMap[s];
+    });
 }
